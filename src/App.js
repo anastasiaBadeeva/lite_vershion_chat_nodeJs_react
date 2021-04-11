@@ -1,19 +1,14 @@
 import React from 'react';
 import io from 'socket.io-client';
+import { JoinBlock } from './components/JoinBlock';
 
-function App() {
-  const onConnectSocket = () => {
-    io('http://localhost:8888');
-  };
+const socket = io('http://localhost:8888');
+const App = () => {
   return (
     <div className="wrapper">
-      <div className="join-block">
-        <input type="text" placeholder="ROOM ID" value=""></input>
-        <input type="text" placeholder="Your name" value=""></input>
-        <button className="btn btn-success">Entry</button>
-      </div>
+      <JoinBlock />
     </div>
   );
-}
+};
 
 export default App;
