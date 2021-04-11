@@ -1,14 +1,17 @@
 import React from 'react'
 import socket from '../socket';
 import axios from 'axios'
-export const JoinBlock = () => {
+export const JoinBlock = ({onLogin}) => {
     const [roomId, setRoomId] = React.useState("")
     const [userName, setUserName] = React.useState("")
-    const onPostData = () =>{
+    const [isLoading, setLoading] = React.useState(false)
+    const onPostData =  async () =>{
         if (!roomId  || !userName) {
             alert("Wrong data")
         }
-        axios.post('/rooms',{roomId,userName})
+        setLoading(true)
+         await axios.post('/rooms',{roomId,userName})
+        onLogin()
         console.log(roomId,userName)
     }
     
@@ -16,7 +19,9 @@ export const JoinBlock = () => {
         <div className="join-block">
         <input type="text" placeholder="ROOM ID" value={roomId} onChange={ e =>{setRoomId(e.target.value)}}></input>
         <input type="text" placeholder="Your name" value={userName} onChange={ e =>{setUserName(e.target.value)}}></input>
-        <button onClick={onPostData} className="btn btn-success">Entry</button>
+        <button disabled={isLoading} onClick={onPostData} className="btn btn-success">
+            {isLoading ? 'Entering...' :'Entry'}
+        </button>
       </div>
     )
 }
