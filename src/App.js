@@ -1,8 +1,7 @@
 import React from 'react';
-import io from 'socket.io-client';
+import socket from './socket';
 import { JoinBlock } from './components/JoinBlock';
 
-const socket = io('http://localhost:8888');
 const App = () => {
   return (
     <div className="wrapper">
