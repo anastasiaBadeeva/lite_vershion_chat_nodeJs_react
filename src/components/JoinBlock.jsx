@@ -15,7 +15,7 @@ export const JoinBlock = ({onLogin}) => {
         }
          await axios.post('/rooms',dataSocket)
         onLogin(dataSocket)
-        console.log(roomId,userName)
+     
     }
     
     return (

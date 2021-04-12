@@ -34,9 +34,9 @@ app.post('/rooms', (req, res) => {
 io.on('connection', (socket) => {
   socket.on('ROOM:JOIN', ({ roomId, userName }) => {
     socket.join(roomId);
-    rooms.get(roomId).get('userd').set(socket.id, userName);
-    const users = rooms.get(roomId).get('userd').values();
-    socket.to(roomId).broadcast.emit('ROOM:JOINED', users);
+    rooms.get(roomId).get('users').set(socket.id, userName);
+    const users = [...rooms.get(roomId).get('users').values()];
+    socket.broadcast.to(roomId).emit('ROOM:JOINED', users);
   });
   console.log('socet connection', socket.id);
 });

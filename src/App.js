@@ -15,7 +15,12 @@ const App = () => {
     });
     socket.emit('ROOM:JOIN', dataSocket);
   };
-  console.log(state);
+  React.useEffect(() => {
+    socket.on('ROOM:JOINED', (users) => {
+      console.log('new user', users);
+    });
+  }, []);
+
   return <div className="wrapper">{!state.joined && <JoinBlock onLogin={onLogin} />}</div>;
 };
 
