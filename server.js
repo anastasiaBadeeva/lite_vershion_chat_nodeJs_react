@@ -32,6 +32,9 @@ app.post('/rooms', (req, res) => {
   res.send();
 });
 io.on('connection', (socket) => {
+  socket.on('ROOM:JOIN', (data) => {
+    socket.join(data.roomId);
+  });
   console.log('socet connection', socket.id);
 });
 
