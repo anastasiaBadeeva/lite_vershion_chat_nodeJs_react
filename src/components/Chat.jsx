@@ -1,7 +1,8 @@
 import React from 'react'
 import socket from '../socket'
-const Chat = ({users,messages, userName ,roomId}) => {
+const Chat = ({users,messages, userName ,roomId, addMessage}) => {
     const [messageValue, setMessageValue] = React.useState('')
+    const messagesRef = React.useRef(null)
     const onSend = () =>{
         console.log("dd")
         socket.emit('ROOM:NEW_MESSAGE',{
@@ -10,11 +11,18 @@ const Chat = ({users,messages, userName ,roomId}) => {
             text : messageValue
         })
         setMessageValue('')
+        addMessage({
+            userName,
+            text : messageValue
+        })
     }
+    React.useEffect(() => {
+        messagesRef.current.scrollTo(0 , messagesRef.current.scrollHeight)
+    }, [messages])
     return (
         <div className="chat">
       <div className="chat-users">
-        Room: <b>roomId</b>
+        Room: <b>{roomId}</b>
         <hr />
         <b>Online : {users.length}</b>
         <ul>
@@ -22,9 +30,9 @@ const Chat = ({users,messages, userName ,roomId}) => {
         </ul>
       </div>
       <div className="chat-messages">
-        <div  className="messages">
+        <div  className="messages" ref={messagesRef}>
           {messages.map((message) => (
-            <div key={roomId +message} className="message">
+            <div key={roomId + message} className="message">
               <p>{message.text}</p>
               <div>
                 <span>{message.userName}</span>
