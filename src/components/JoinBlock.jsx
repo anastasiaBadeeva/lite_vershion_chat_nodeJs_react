@@ -9,12 +9,16 @@ export const JoinBlock = ({onLogin}) => {
         if (!roomId  || !userName) {
             alert("Wrong data")
         }
-        setLoading(true)
-        const dataSocket= {
-            roomId,userName
+        else{
+            setLoading(true)
+            const dataSocket= {
+                roomId,userName
+            }
+             await axios.post('/rooms',dataSocket)
+            onLogin(dataSocket)
         }
-         await axios.post('/rooms',dataSocket)
-        onLogin(dataSocket)
+        
+   
      
     }
     

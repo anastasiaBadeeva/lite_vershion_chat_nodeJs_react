@@ -1,3 +1,4 @@
+const { urlencoded } = require('express');
 const express = require('express');
 
 const app = express();
@@ -13,8 +14,18 @@ const io = require('socket.io')(server, {
 const rooms = new Map();
 app.use(express.json());
 
-app.get('/rooms', (req, res) => {
-  res.json(rooms);
+app.get('/rooms/:id', (req, res) => {
+  const { id: roomId } = req.params;
+  const obj = rooms.has(roomId)
+    ? {
+        users: [...rooms.get(roomId).get('users').values()],
+        messages: [...rooms.get(roomId).get('messages').values()],
+      }
+    : {
+        users: [],
+        messages: [],
+      };
+  res.json(obj);
 });
 
 app.post('/rooms', (req, res) => {
@@ -36,7 +47,16 @@ io.on('connection', (socket) => {
     socket.join(roomId);
     rooms.get(roomId).get('users').set(socket.id, userName);
     const users = [...rooms.get(roomId).get('users').values()];
-    socket.broadcast.to(roomId).emit('ROOM:JOINED', users);
+    socket.broadcast.to(roomId).emit('ROOM:SET_USERS', users);
+  });
+  socket.on('disconnect', () => {
+    rooms.forEach((value, roomId) => {
+      if (value.get('users').delete(socket.id)) {
+        let users = [...value.get('users').values()];
+        socket.broadcast.to(roomId).emit('ROOM:SET_USERS', users);
+      }
+    });
+    console.log('disconnect');
   });
   console.log('socet connection', socket.id);
 });
